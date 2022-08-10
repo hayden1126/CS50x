@@ -11,7 +11,6 @@ int main(void)
     int length = log10(card_number) + 1;
     printf("Length: %i\n", length);
     bool check = check_sum(card_number, length);
-    // printf("%d\n", check);
     if (check)
     {
         printf("%s", check_type(card_number, length));
@@ -35,21 +34,17 @@ bool check_sum(long int card_int, int len)
         if (i % 2 == 0)
         {
             long int a = pow(10, i);
-            // printf("%li", (card_int % a) / (a / 10));
             int add = 2 * round((card_int % a) / (a / 10));
-            sum += add%10 + (add%100)/10;
-            // printf("add: %i, sum: %i\n", add, sum);
+            sum += add % 10 + (add % 100) / 10;
         }
         else
         {
             long int b = pow(10, i);
             int add = round((card_int % b) / (b / 10));
             sum += add;
-            // printf("add: %i, sum: %i\n", add, sum);
         }
     }
-    // printf("%i\n", sum);
-    if (sum%10 == 0)
+    if (sum % 10 == 0)
     {
         return true;
     }
@@ -61,8 +56,8 @@ bool check_sum(long int card_int, int len)
 
 string check_type(long int card_int, int len)
 {
-    int first_digit = card_int / (long) pow(10, len-1);
-    int digits = card_int / (long) pow(10, len-2);
+    int first_digit = card_int / (long) pow(10, len - 1);
+    int digits = card_int / (long) pow(10, len - 2);
     if ((digits == 34 || digits == 37) && len == 15)
     {
         return "AMEX\n";
