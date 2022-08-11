@@ -2,12 +2,12 @@
 #include <math.h>
 #include <stdio.h>
 
-bool check_sum(long int card_int, int len);
-string check_type(long int card_int, int len);
+bool check_sum(long card_int, int len);
+string check_type(long card_int, int len);
 
 int main(void)
 {
-    long int card_number = get_long("Number: ");
+    long card_number = get_long("Number: ");
     int length = log10(card_number) + 1;
     printf("Length: %i\n", length);
     bool check = check_sum(card_number, length);
@@ -23,9 +23,8 @@ int main(void)
 
 
 
-bool check_sum(long int card_int, int len)
+bool check_sum(long card_int, int len)
 {
-    // long int card_int = card_num;
     int sum = 0;
 
     // for loop to get 10^i
@@ -33,13 +32,13 @@ bool check_sum(long int card_int, int len)
     {
         if (i % 2 == 0)
         {
-            long int a = pow(10, i);
+            long a = pow(10, i);
             int add = 2 * round((card_int % a) / (a / 10));
             sum += add % 10 + (add % 100) / 10;
         }
         else
         {
-            long int b = pow(10, i);
+            long b = pow(10, i);
             int add = round((card_int % b) / (b / 10));
             sum += add;
         }
@@ -54,7 +53,7 @@ bool check_sum(long int card_int, int len)
     }
 }
 
-string check_type(long int card_int, int len)
+string check_type(long card_int, int len)
 {
     int first_digit = card_int / (long) pow(10, len - 1);
     int digits = card_int / (long) pow(10, len - 2);
