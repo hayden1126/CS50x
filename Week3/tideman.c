@@ -205,7 +205,10 @@ bool check_cycle(int og_target, int temp_target)
             // Otherwise, we set the temp_target to the winner of this pair (other) and checkCycle again to check if it is loser to anything
             temp_target = other;
             // This goes on until either a Cycle is found or the top of the hierarchy is found without any cycles
-            check_cycle(og_target, temp_target);
+            if (check_cycle(og_target, temp_target))
+            {
+                return true;
+            }
         }
     }
     // If there is no cycle after checking (ie. There is a top of the hierarchy of candidates)
