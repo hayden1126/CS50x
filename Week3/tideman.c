@@ -16,7 +16,6 @@ typedef struct
 {
     int winner;
     int loser;
-    int winning_strength;
 }
 pair;
 
@@ -127,11 +126,6 @@ void record_preferences(int ranks[])
         for (int j = i + 1; j < candidate_count; j++)
         {
             int inferior_cand_num = ranks[j];
-            // Checks if there is a value in the preferences array for this preference
-            // if (preferences[cand_num][inferior_cand_num] == void)
-            // {
-            //     preferences[cand_num][inferior_cand_num] = 0;
-            // }
             preferences[cand_num][inferior_cand_num]++;
         }
     }
@@ -145,15 +139,16 @@ void add_pairs(void)
     for (int i = 0; i < candidate_count; i++)
     {
         // For each of the next candidates
-        for (int j = i + 1; j < candidate_count; j++)
+        for (int j = 0; j < candidate_count; j++)
         {
-            // If more people prefer candidate i than candidate j, set winner in pair to i and loser to j
+            if (i == j)
+            {
+                continue;
+            }
             if (preferences[i][j] > preferences[j][i])
             {
                 pairs[pair_count].winner = i;
                 pairs[pair_count].loser = j;
-                // winning_strength is the total people who prefer winner over loser
-                pairs[pair_count].winning_strength = preferences[i][j];
                 pair_count++;
             }
         }
@@ -169,14 +164,13 @@ void sort_pairs(void)
     {
         // If goes through entire array yet nothing needed to swap, complete will remain true and so the loop stops
         complete = true;
-
         // For pair in pairs
         for (int i = 0; i < pair_count - 1; i++)
         {
             pair current_pair = pairs[i];
             pair next_pair = pairs[i + 1];
             // If current pair strength < that of next pair, swap them --> so complete set to false and loop continues
-            if (current_pair.winning_strength < next_pair.winning_strength)
+            if (preferences[current_pair.winner][current_pair.loser] < preferences[next_pair.winner][next_pair.loser])
             {
                 complete = false;
                 pairs[i] = next_pair;
@@ -214,7 +208,8 @@ bool check_cycle(int og_target, int temp_target)
             check_cycle(og_target, temp_target);
         }
     }
-    // If there is no cycle after checking (ie. There is a top of the hierarchy of candidates), return false meaning there is no cycle
+    // If there is no cycle after checking (ie. There is a top of the hierarchy of candidates)
+    // Return false meaning there is no cycle
     return false;
 }
 
@@ -232,7 +227,6 @@ int find_winner(int temp_winner)
         // If the temp_winner is loser to other candidate
         if (locked[other][temp_winner])
         {
-            printf("temp: %i\n", temp_winner);
             // Set the temp_winner to the winner of this pair (other) and find_winner again to check if it is loser to anything
             temp_winner = other;
             temp_winner = find_winner(temp_winner);
@@ -275,6 +269,6 @@ void print_winner(void)
     // Finds the candidate at the top of the hierarchy
     int winner = find_winner(1);
 
-    printf("%i: %s\n", winner, candidates[winner]);
+    printf("%s\n", candidates[winner]);
     return;
 }
