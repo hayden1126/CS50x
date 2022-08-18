@@ -249,13 +249,12 @@ void lock_pairs(void)
         pair current_pair = pairs[i];
         locked[current_pair.winner][current_pair.loser] = true;
         // Checking if cycle exists
-        bool is_Cycle = check_cycle(current_pair.winner, current_pair.winner);
-        if (is_Cycle)
+        bool is_cycle = check_cycle(current_pair.winner, current_pair.winner);
+        if (is_cycle)
         {
             // Remove the current locked in pair and skips to the next pair if cycle exists
             locked[current_pair.winner][current_pair.loser] = false;
         }
-        continue;
     }
     return;
 }
