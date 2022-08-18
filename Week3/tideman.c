@@ -119,7 +119,7 @@ bool vote(int rank, string name, int ranks[])
 void record_preferences(int ranks[])
 {
     // For each candidate (int) in ranks array:
-    for (int i = 0; i < candidate_count; i++)
+    for (int i = 0; i < candidate_count - 1; i++)
     {
         int cand_num = ranks[i];
         // For each less preferred candidate (int) after current candidate:
@@ -203,9 +203,8 @@ bool check_cycle(int og_target, int temp_target)
                 return true;
             }
             // Otherwise, we set the temp_target to the winner of this pair (other) and checkCycle again to check if it is loser to anything
-            temp_target = other;
             // This goes on until either a Cycle is found or the top of the hierarchy is found without any cycles
-            if (check_cycle(og_target, temp_target))
+            if (check_cycle(og_target, other))
             {
                 return true;
             }
@@ -259,7 +258,6 @@ void lock_pairs(void)
             // Remove the current locked in pair and skips to the next pair if cycle exists
             locked[current_pair.winner][current_pair.loser] = false;
             locked_pairs--;
-
         }
         continue;
     }
@@ -271,7 +269,6 @@ void print_winner(void)
 {
     // Finds the candidate at the top of the hierarchy
     int winner = find_winner(1);
-
     printf("%s\n", candidates[winner]);
     return;
 }
