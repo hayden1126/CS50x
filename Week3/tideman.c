@@ -242,22 +242,18 @@ int find_winner(int temp_winner)
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    int locked_pairs = 0;
     // For each pair in pairs
     for (int i = 0; i < pair_count; i++)
     {
         // Locks in the pair
         pair current_pair = pairs[i];
         locked[current_pair.winner][current_pair.loser] = true;
-        locked_pairs++;
-
         // Checking if cycle exists
         bool is_Cycle = check_cycle(current_pair.winner, current_pair.winner);
         if (is_Cycle)
         {
             // Remove the current locked in pair and skips to the next pair if cycle exists
             locked[current_pair.winner][current_pair.loser] = false;
-            locked_pairs--;
         }
         continue;
     }
