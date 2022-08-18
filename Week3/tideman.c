@@ -266,4 +266,27 @@ void print_winner(void)
     int winner = find_winner(1);
     printf("%s\n", candidates[winner]);
     return;
+
+    // Or we can exclude using recursion but instead the following 
+    bool is_winner = true;
+    // For each target candidate i
+    for (int i = 0; i < candidate_count; i++)
+    {
+        // For each other candidate j
+        for (int j = 0; j < candidate_count; j++)
+        {
+            // If candidate i loses to any other candidate j, set is_winner to false as candidate i cannot be the winner
+            if (locked[j][i] == true)
+            {
+                is_winner = false;
+                // Break to go on to the next target candidate i
+                break;
+            }
+        }
+        // Prints the winner (can take account for multiple ones)
+        if (is_winner)
+        {
+            printf("%s\n", candidates[i]);
+        }
+    }
 }
