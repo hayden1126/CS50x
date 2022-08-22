@@ -33,7 +33,11 @@ unsigned int hash_loc[] = {0, 26, 728, 19682, 531440, 14348906}; // e.g. table[0
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
 {
-    // TODO
+    // TODO If word starts with apostrophe
+    if (word[0] == '\'')
+    {
+        return false;
+    }
     int length = strlen(word);
     node *current_node = table[hash(word)];
     // While current_node is not empty
@@ -147,30 +151,33 @@ unsigned int size(void)
 {
     // word_count is a global which was calculated in the load function already
     return word_count;
-    // // But alternatively, the following lines can be used to calculate it again:
-    // int count = 0;
-    // for (int i = 0; i < N; i++)
-    // {
-    //     if (table[i] != NULL)
-    //     {
-    //         count++;
-    //         printf("%i %s\n", i, table[i]->word);
-    //         node *nextn = table[i]->next;
 
-    //         while (nextn != NULL)
-    //         {
-    //             count++;
-    //             printf("%i %s\n", i, nextn->word);
-    //             nextn = nextn->next;
-    //         }
-    //     }
-    // }
-    // return count;
 }
 
 // Unloads dictionary from memory, returning true if successful, else false
 bool unload(void)
 {
-    // TODO
-    return false;
+    // TODO For every node from character lengths 1-5
+    for (int i = 0; i < hash_loc[NO_OF_CHAR - 1]; i++)
+    {
+        if (table[i] != NULL)
+        {
+            free(table[i]);
+        }
+    }
+    node *current_node = NULL;
+    node *temp = NULL;
+    // For remaining nodes
+    for (int i = hash_loc[NO_OF_CHAR - 1]; i < N; i++)
+    {
+        current_node = table[i];
+        // While current_node is not empty
+        while (current_node != NULL)
+        {
+            temp = current_node;
+            current_node = current_node->next;
+            free(temp);
+        }
+    }
+    return true;
 }
