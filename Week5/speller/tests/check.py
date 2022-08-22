@@ -1,6 +1,6 @@
+# A file i use python to simulate the stuff I do in C to see if it works
 
-
-# with open("large","r") as file:
+# with open("dictionaries/large","r") as file:
 #     data = file.read().split("\n")
 #     count = 0
 #     for word in data:

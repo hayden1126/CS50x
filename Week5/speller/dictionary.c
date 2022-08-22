@@ -17,27 +17,22 @@ typedef struct node
 }
 node;
 
-// TODO: Choose number of buckets in hash table up to all combination of words with (first) 6 characters
-// basically the total nodes needed to cover all possible combinations with all lengths from 1 - 6 (6+ length words will linked listed at 6) is:
-// (26) + (26 x 27) + (26 x 27^2) + (26 x 27^3) + (26 x 27^4) + (26 x 27^5) = 387420488
-const unsigned int N = 387420488;
-const int NO_OF_CHAR = 6; // Number of characters that the table can accomodate (as in all combinations with the 1st 6 characters)
+// TODO: Choose number of buckets in hash table up to all combination of words with (first) 4 characters
+// basically the total nodes needed to cover all possible combinations with all lengths from 1 - 4 (4+ length words will linked listed at 4) is:
+// (26) + (26 x 27) + (26 x 27^2) + (26 x 27^3) = 531440
+const unsigned int N = 531440;
+const int NO_OF_CHAR = 4; // Number of characters that the table can accomodate (as in all combinations with the 1st 6 characters)
 
 // Hash table
-// Each of the group of words sorted by length takes 26, 702, 18954, 511758, 13817466, 373071582 spaces/nodes respectively, with total N = 387420488
+// Each of the group of words sorted by length takes 26, 702, 18954, 511758 spaces/nodes respectively, with total N = 531440
 node *table[N];
 unsigned int word_count = 0; // number of words in dictionary
-// Positions designated for the first word of words with character lengths 1, 2, 3, 4, 5, 6 respectively
-unsigned int hash_loc[] = {0, 26, 728, 19682, 531440, 14348906}; // e.g. table[0-25] is for all 1 char words, table[26-727] for 2 char words...
+// Positions designated for the first word of words with character lengths 1, 2, 3, 4 respectively
+unsigned int hash_loc[] = {0, 26, 728, 19682}; // e.g. table[0-25] is for all 1 char words, table[26-727] for 2 char words...
 
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
 {
-    // TODO If word starts with apostrophe
-    if (word[0] == '\'')
-    {
-        return false;
-    }
     int length = strlen(word);
     node *current_node = table[hash(word)];
     // While current_node is not empty
@@ -69,6 +64,7 @@ int semi_hash(char letter)
 // Hashes word to a number
 unsigned int hash(const char *word)
 {
+
     // TODO
     unsigned int index = 0;
 
@@ -83,12 +79,12 @@ unsigned int hash(const char *word)
     // Find the correct position in table according to their designated loc for their number of characters length
     // i.e. add the hash_loc to the index
 
-    // If word is 6 or shorter characters
+    // If word is 4 or shorter characters
     if (length <= NO_OF_CHAR)
     {
         index += hash_loc[length - 1];
     }
-    // else just categorize them in the same node with 6 characters
+    // else just categorize them in the same node with 4 characters
     else
     {
         index += hash_loc[NO_OF_CHAR - 1];
@@ -157,26 +153,18 @@ unsigned int size(void)
 // Unloads dictionary from memory, returning true if successful, else false
 bool unload(void)
 {
-    // TODO For every node from character lengths 1-5
-    for (int i = 0; i < hash_loc[NO_OF_CHAR - 1]; i++)
-    {
-        if (table[i] != NULL)
-        {
-            free(table[i]);
-        }
-    }
     node *current_node = NULL;
     node *temp = NULL;
     // For remaining nodes
-    for (int i = hash_loc[NO_OF_CHAR - 1]; i < N; i++)
+    for (int i = 0; i < N; i++)
     {
         current_node = table[i];
         // While current_node is not empty
         while (current_node != NULL)
         {
-            temp = current_node;
-            current_node = current_node->next;
-            free(temp);
+            temp = current_node->next;
+            free(current_node);
+            current_node = temp;
         }
     }
     return true;

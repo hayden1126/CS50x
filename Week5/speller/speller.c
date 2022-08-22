@@ -37,9 +37,7 @@ int main(int argc, char *argv[])
 
     // Load dictionary
     getrusage(RUSAGE_SELF, &before);
-    printf("started\n");
     bool loaded = load(dictionary);
-    printf("ended\n");
     getrusage(RUSAGE_SELF, &after);
 
     // Exit if dictionary not loaded
@@ -155,6 +153,7 @@ int main(int argc, char *argv[])
     bool unloaded = unload();
     getrusage(RUSAGE_SELF, &after);
 
+    // printf("done");
     // Abort if dictionary not unloaded
     if (!unloaded)
     {

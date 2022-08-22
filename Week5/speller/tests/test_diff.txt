@@ -1,0 +1,12 @@
+--- test.txt	2022-08-22 07:57:10.976805916 +0000
++++ keys/constitution.txt	2021-12-31 01:59:34.000000000 +0000
+@@ -35,9 +35,3 @@
+ WORDS MISSPELLED:     30
+ WORDS IN DICTIONARY:  143091
+ WORDS IN TEXT:        7573
+-TIME IN load:         0.16
+-TIME IN check:        0.01
+-TIME IN size:         0.71
+-TIME IN unload:       0.90
+-TIME IN TOTAL:        1.78
+-
