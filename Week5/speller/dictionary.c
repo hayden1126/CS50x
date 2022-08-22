@@ -21,7 +21,7 @@ node;
 // basically the total nodes needed to cover all possible combinations with all lengths from 1 - 4 (4+ length words will linked listed at 4) is:
 // (26) + (26 x 27) + (26 x 27^2) + (26 x 27^3) = 531440
 const unsigned int N = 531440;
-const int NO_OF_CHAR = 4; // Number of characters that the table can accomodate (as in all combinations with the 1st 6 characters)
+const int NO_OF_CHAR = 4; // Number of characters to hash for
 
 // Hash table
 // Each of the group of words sorted by length takes 26, 702, 18954, 511758 spaces/nodes respectively, with total N = 531440
