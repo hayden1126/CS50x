@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <strings.h>
 #include <math.h>
 #include "dictionary.h"
 
@@ -17,20 +18,36 @@ typedef struct node
 node;
 
 // TODO: Choose number of buckets in hash table up to all combination of words with (first) 6 characters
-// basically the total needed to cover all possible combinations with all lengths from 1 - 6 (6 + words will be stored at 6) is:
-// (26) + (26 x 27) + (26 x 27^2) + (26 x 27^3) + (26 x 27^4) + (26 x 27^5) =
+// basically the total nodes needed to cover all possible combinations with all lengths from 1 - 6 (6+ length words will linked listed at 6) is:
+// (26) + (26 x 27) + (26 x 27^2) + (26 x 27^3) + (26 x 27^4) + (26 x 27^5) = 387420488
 const unsigned int N = 387420488;
+const int NO_OF_CHAR = 6; // Number of characters that the table can accomodate (as in all combinations with the 1st 6 characters)
 
 // Hash table
-// Each of the group of words sorted by length takes 26, 702, 18954, 511758, 13817466, 373071582 spaces respectively, with total N = 387420488
+// Each of the group of words sorted by length takes 26, 702, 18954, 511758, 13817466, 373071582 spaces/nodes respectively, with total N = 387420488
 node *table[N];
-// Positions designated for the first of words with char lengths 1, 2, 3, 4, 5, 6 respectively
+unsigned int word_count = 0; // number of words in dictionary
+// Positions designated for the first word of words with character lengths 1, 2, 3, 4, 5, 6 respectively
 unsigned int hash_loc[] = {0, 26, 728, 19682, 531440, 14348906}; // e.g. table[0-25] is for all 1 char words, table[26-727] for 2 char words...
 
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
 {
     // TODO
+    int length = strlen(word);
+    node *current_node = table[hash(word)];
+    // While current_node is not empty
+    while (current_node != NULL)
+    {
+        // If the words are the same (regardless of capitalization as implemented in strcasecmp())
+        if (strcasecmp(current_node->word, word) == 0)
+        {
+            return true;
+        }
+        // If node does not have word, then go on to next node
+        current_node = current_node->next;
+    }
+    // If whole linked list cannot find the word, then it is misspelled, return false
     return false;
 }
 
@@ -45,26 +62,32 @@ int semi_hash(char letter)
     return toupper(letter) - 'A';
 }
 
-
 // Hashes word to a number
 unsigned int hash(const char *word)
 {
-    // TODO: Improve this hash function
+    // TODO
     unsigned int index = 0;
-    // For each letter, calculate and add to index
+
     int length = strlen(word);
-    for (int i = 0; i < length && i < 6; i++)
+    // For each letter
+    for (int i = 0; i < length && i < NO_OF_CHAR; i++)
     {
-        index += (semi_hash(word[i]) * pow(27, N - i - 1));
+        // Calculate and add to index
+        index += (semi_hash(word[i]) * pow(27, NO_OF_CHAR - 1 - i));
     }
+    // index right now is only in the correct position within a table of nodes with same length, so:
     // Find the correct position in table according to their designated loc for their number of characters length
-    if (length < 7)
+    // i.e. add the hash_loc to the index
+
+    // If word is 6 or shorter characters
+    if (length <= NO_OF_CHAR)
     {
         index += hash_loc[length - 1];
     }
+    // else just categorize them in the same node with 6 characters
     else
     {
-        index += hash_loc[5];
+        index += hash_loc[NO_OF_CHAR - 1];
     }
     return index;
 }
@@ -78,13 +101,22 @@ bool load(const char *dictionary)
     unsigned int count = 0;
     // Scan the file for each word until end of file, put the string/word in the variable word
     FILE *dict = fopen(dictionary, "r");
-    while (fscanf(dict, "%s", word) != EOF)
+    // If scanning first word returns EOF --> there is no word in dictionary --> free memory and return false
+    if (fscanf(dict, "%s", word) == EOF)
     {
+        fclose(dict);
+        free(word);
+        return false;
+    }
+    // If dictionary is valid
+    do
+    {
+        // Hash the word then insert it in correct node
         unsigned int index = hash(word);
-        // printf("%i word: %s\n", index, word);
-        // count++;
-        // Insert word at correct node
-        // Check if node is empty
+        word_count++; // This is for the size function later
+
+        // Check if correct node is empty
+        // If empty then put that word in that node
         if (table[index] == NULL)
         {
             new_node = malloc(sizeof(node));
@@ -92,7 +124,7 @@ bool load(const char *dictionary)
             new_node->next = NULL;
             table[index] = new_node;
         }
-        // If node is occupied, insert at the beginning
+        // If node is occupied, insert new node at the beginning
         else
         {
             new_node = malloc(sizeof(node));
@@ -100,38 +132,40 @@ bool load(const char *dictionary)
             new_node->next = table[index];
             table[index] = new_node;
         }
-
     }
-    // unsigned int count = 0;
-    printf("teststart\n");
-    for (int i = 0; i < N; i++)
-    {
-        if (table[i] != NULL)
-        {
-            count++;
-            printf("%i %s\n", i, table[i]->word);
-            node *nextn = table[i]->next;
+    while (fscanf(dict, "%s", word) != EOF); // do...while loop: so scans words until the end of the file
 
-            while (nextn != NULL)
-            {
-                printf("%i %s\n", i, nextn->word);
-                nextn = nextn->next;
-            }
-        }
-    }
-    printf("testfinish\n");
-    printf("%i\n", count);
+    // Close file and free memory only used in/for this function (nodes freed later in unload function)
     fclose(dict);
     free(word);
+    // Successfully hashed word, loaded dictionary and freed memory, return true
     return true;
-    return false;
 }
 
 // Returns number of words in dictionary if loaded, else 0 if not yet loaded
 unsigned int size(void)
 {
-    // TODO
-    return 0;
+    // word_count is a global which was calculated in the load function already
+    return word_count;
+    // // But alternatively, the following lines can be used to calculate it again:
+    // int count = 0;
+    // for (int i = 0; i < N; i++)
+    // {
+    //     if (table[i] != NULL)
+    //     {
+    //         count++;
+    //         printf("%i %s\n", i, table[i]->word);
+    //         node *nextn = table[i]->next;
+
+    //         while (nextn != NULL)
+    //         {
+    //             count++;
+    //             printf("%i %s\n", i, nextn->word);
+    //             nextn = nextn->next;
+    //         }
+    //     }
+    // }
+    // return count;
 }
 
 // Unloads dictionary from memory, returning true if successful, else false
