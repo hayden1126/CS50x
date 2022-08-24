@@ -1,0 +1,2 @@
+SELECT title FROM movies WHERE id in
+(SELECT stars.movie_id FROM stars INNER JOIN people ON people.id = stars.person_id WHERE stars.person_id = (SELECT id FROM people WHERE name = "Johnny Depp") OR stars.person_id = (SELECT id FROM people WHERE name = "Helena Bonham Carter") GROUP BY movie_id HAVING COUNT(movie_id) > 1);
