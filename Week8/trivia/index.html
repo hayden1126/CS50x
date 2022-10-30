@@ -7,26 +7,32 @@
         <title>Trivia!</title>
         <script>
             // TODO: Add code to check answers to questions
-            var paragraph = document.getElementById("#question1");
+            function showcorrect(id) 
+            {
+                document.getElementById(id).style.backgroundColor = 'green';
+                document.getElementById("mc").textContent = "Correct!";
+            };
 
-            let correct = document.querySelector('#correct');
-            correct.addEventListener('click', function() {
-                correct.style.backgroundColor = 'green';
-                var text = document.createTextNode("Correct!");
-                paragraph.appendChild(text);
-            });
-            let incorrect1 = document.querySelector('#incorrect1');
-            incorrect1.addEventListener('click', function() {
-                incorrect1.style.backgroundColor = 'red';
-                var text = document.createTextNode("Incorrect");
-                paragraph.appendChild(text);
-            });
-            let incorrect2 = document.querySelector('#incorrect2');
-            incorrect2.addEventListener('click', function() {
-                incorrect2.style.backgroundColor = 'red';
-                var text = document.createTextNode("Incorrect");
-                paragraph.appendChild(text);
-            });
+            function showincorrect(id) 
+            {
+                document.getElementById(id).style.backgroundColor = 'red';
+                document.getElementById("mc").textContent = "Incorrect";
+            };
+
+            function checkAnswer(answer, submit_button)
+            {
+                let ans = document.querySelector('#' + answer).value.toLowerCase();
+                if (ans == "100")
+                {
+                    document.getElementById(answer).style.backgroundColor = 'green';
+                    document.getElementById("free").textContent = "Correct!";
+                }
+                else
+                {
+                    document.getElementById(answer).style.backgroundColor = 'red';
+                    document.getElementById("free").textContent = "Incorrect";
+                }
+            };
         </script>
     </head>
     <body>
@@ -39,18 +45,22 @@
                 <h2>Part 1: Multiple Choice </h2>
                 <hr>
                 <!-- TODO: Add multiple choice question here -->
-                <div id="question1">
-                    <h3>What is 1 + 1?</h3>
-                </div>
-                <button id="correct">2</button>
-                <button id="incorrect1">0</button>
-                <button id="incorrect2">11</button>
+                <h3>What is 1 + 1?</h3>
+                <h4 id="mc"></h4>
+                <button id="correct1" onclick="showcorrect('correct1')">2</button>
+                <button id="incorrect1" onclick="showincorrect('incorrect1')">0</button>
+                <button id="incorrect2" onclick="showincorrect('incorrect2')">11</button>
             </div>
-
             <div class="section">
                 <h2>Part 2: Free Response</h2>
                 <hr>
                 <!-- TODO: Add free response question here -->
+                <h3>What is 10 x 10?</h3>
+                <h4 id="free"></h4>
+                <form onsubmit="checkAnswer('answer', 'submit_button'); return false">
+                    <input id="answer">
+                    <input id="submit_button" type="submit" value="check">
+                </form>
             </div>
         </div>
     </body>
