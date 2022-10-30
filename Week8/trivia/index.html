@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet">
+        <title>Trivia!</title>
+        <script>
+            // TODO: Add code to check answers to questions
+            var paragraph = document.getElementById("#question1");
+
+            let correct = document.querySelector('#correct');
+            correct.addEventListener('click', function() {
+                correct.style.backgroundColor = 'green';
+                var text = document.createTextNode("Correct!");
+                paragraph.appendChild(text);
+            });
+            let incorrect1 = document.querySelector('#incorrect1');
+            incorrect1.addEventListener('click', function() {
+                incorrect1.style.backgroundColor = 'red';
+                var text = document.createTextNode("Incorrect");
+                paragraph.appendChild(text);
+            });
+            let incorrect2 = document.querySelector('#incorrect2');
+            incorrect2.addEventListener('click', function() {
+                incorrect2.style.backgroundColor = 'red';
+                var text = document.createTextNode("Incorrect");
+                paragraph.appendChild(text);
+            });
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Trivia!</h1>
+        </div>
+
+        <div class="container">
+            <div class="section">
+                <h2>Part 1: Multiple Choice </h2>
+                <hr>
+                <!-- TODO: Add multiple choice question here -->
+                <div id="question1">
+                    <h3>What is 1 + 1?</h3>
+                </div>
+                <button id="correct">2</button>
+                <button id="incorrect1">0</button>
+                <button id="incorrect2">11</button>
+            </div>
+
+            <div class="section">
+                <h2>Part 2: Free Response</h2>
+                <hr>
+                <!-- TODO: Add free response question here -->
+            </div>
+        </div>
+    </body>
+</html>
